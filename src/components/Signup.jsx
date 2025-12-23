@@ -1,7 +1,7 @@
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { HiSparkles } from 'react-icons/hi';
-import { FiMail, FiLock, FiUser, FiArrowRight } from 'react-icons/fi';
+import { Mail, Lock, User, ArrowRight, ShoppingCart } from 'lucide-react';
 
 const Signup = ({ onSwitchToLogin }) => {
   const [name, setName] = useState('');
@@ -30,147 +30,160 @@ const Signup = ({ onSwitchToLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-50 via-white to-purple-50/30 relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-200/40 rounded-full blur-3xl animate-pulse-slow"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-200/40 rounded-full blur-3xl animate-pulse-slow delay-1000"></div>
-        <div className="absolute top-1/2 right-1/3 w-72 h-72 bg-green-200/30 rounded-full blur-3xl animate-pulse-slow delay-2000"></div>
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden bg-background">
+      {/* Background glow */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="w-full max-w-md relative z-10">
-        {/* Logo Section */}
-        <div className="text-center mb-8 animate-fade-in-up">
-          <div className="inline-block mb-4">
-            <div className="relative">
-              <div className="w-16 h-16 gradient-purple rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-purple-500/30 mx-auto">
-                B
-              </div>
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-white animate-pulse shadow-lg shadow-red-500/50">
-                AI
-              </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-md relative z-10"
+      >
+        {/* Logo/Title */}
+        <div className="text-center mb-12">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+            className="inline-flex items-center gap-3 mb-4"
+          >
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center glow">
+              <ShoppingCart className="w-6 h-6 text-primary" />
             </div>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-          <p className="text-gray-600">Join Bilmo and start shopping smarter</p>
+            <h1 className="text-4xl font-bold text-gradient">Bilmo</h1>
+          </motion.div>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="text-muted-foreground text-lg"
+          >
+            Create your account and start shopping smarter
+          </motion.p>
         </div>
 
         {/* Signup Form */}
-        <div className="glass-effect-light rounded-2xl p-8 shadow-xl border border-purple-100/50 animate-fade-in-up delay-200">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm animate-fade-in">
-                {error}
-              </div>
-            )}
+        <motion.form
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          onSubmit={handleSubmit}
+          className="space-y-6"
+        >
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-destructive/10 border border-destructive/30 text-destructive px-4 py-3 rounded-lg text-sm"
+            >
+              {error}
+            </motion.div>
+          )}
 
-            {success && (
-              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm animate-fade-in">
-                {success}
-              </div>
-            )}
+          {success && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-success/10 border border-success/30 text-success px-4 py-3 rounded-lg text-sm"
+            >
+              {success}
+            </motion.div>
+          )}
 
-            {/* Name Field */}
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <FiUser className="w-4 h-4" />
-                Full Name
-              </label>
-              <div className="relative">
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="w-full bg-white/90 backdrop-blur-sm border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400 transition-all duration-300 hover:border-purple-300 hover:bg-white hover:shadow-md"
-                  placeholder="John Doe"
-                />
-              </div>
-            </div>
+          {/* Name Field */}
+          <div className="relative group">
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <input
+              id="name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="w-full h-14 pl-12 pr-4 rounded-lg bg-card border border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all text-foreground placeholder:text-muted-foreground text-lg"
+              placeholder="Enter your full name"
+            />
+          </div>
 
-            {/* Email Field */}
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <FiMail className="w-4 h-4" />
-                Email Address
-              </label>
-              <div className="relative">
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full bg-white/90 backdrop-blur-sm border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400 transition-all duration-300 hover:border-purple-300 hover:bg-white hover:shadow-md"
-                  placeholder="you@example.com"
-                />
-              </div>
-            </div>
+          {/* Email Field */}
+          <div className="relative group">
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full h-14 pl-12 pr-4 rounded-lg bg-card border border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all text-foreground placeholder:text-muted-foreground text-lg"
+              placeholder="Enter your email"
+            />
+          </div>
 
-            {/* Password Field */}
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <FiLock className="w-4 h-4" />
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  className="w-full bg-white/90 backdrop-blur-sm border-2 border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400 transition-all duration-300 hover:border-purple-300 hover:bg-white hover:shadow-md"
-                  placeholder="At least 6 characters"
-                />
-              </div>
-              <p className="text-xs text-gray-500">Password must be at least 6 characters long</p>
-            </div>
+          {/* Password Field */}
+          <div className="relative group">
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={6}
+              className="w-full h-14 pl-12 pr-4 rounded-lg bg-card border border-border/50 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all text-foreground placeholder:text-muted-foreground text-lg"
+              placeholder="Create a password (min. 6 characters)"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground -mt-4">Password must be at least 6 characters long</p>
 
-            {/* Submit Button */}
+          {/* Submit Button */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.4 }}
+          >
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full gradient-purple px-6 py-3 rounded-xl font-semibold text-white overflow-hidden transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full h-14 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90 glow disabled:opacity-50 disabled:glow-none transition-all rounded-lg flex items-center justify-center gap-2 disabled:cursor-not-allowed"
             >
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                {loading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Creating account...
-                  </>
-                ) : (
-                  <>
-                    <HiSparkles className="w-5 h-5 animate-sparkle" />
-                    Create Account
-                    <FiArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                  </>
-                )}
-              </span>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin"></div>
+                  Creating account...
+                </>
+              ) : (
+                <>
+                  Create Account
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
             </button>
-          </form>
+          </motion.div>
+        </motion.form>
 
-          {/* Switch to Login */}
-          <div className="mt-6 text-center">
-            <p className="text-gray-600 text-sm">
-              Already have an account?{' '}
-              <button
-                onClick={onSwitchToLogin}
-                className="text-purple-600 font-semibold hover:text-purple-700 transition-colors inline-flex items-center gap-1 group"
-              >
-                Sign in
-                <FiArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </button>
-            </p>
-          </div>
-        </div>
-      </div>
+        {/* Switch to Login */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+          className="text-center mt-8"
+        >
+          <p className="text-sm text-muted-foreground">
+            Already have an account?{' '}
+            <button
+              onClick={onSwitchToLogin}
+              className="text-primary font-semibold hover:text-primary/80 transition-colors inline-flex items-center gap-1"
+            >
+              Sign in
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </p>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
 
 export default Signup;
-
