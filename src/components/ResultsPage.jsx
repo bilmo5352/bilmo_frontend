@@ -325,202 +325,59 @@ const ResultsPage = ({ query, onBack }) => {
   });
 
   return (
-    <div className="w-full h-screen flex flex-col bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-800/50 backdrop-blur-sm">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 text-gray-300" />
-          </button>
-          <h1 className="text-lg font-semibold text-white">Bilmo Shopping Agent</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <div ref={modeDropdownRef} className="relative">
-            <button
-              onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
-            >
-              <Sparkles className="w-4 h-4" />
-              {modes.find((m) => m.id === selectedMode)?.name}
-              <ChevronDown className="w-4 h-4" />
-            </button>
-            {isModeDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-700 border border-gray-600 rounded-lg shadow-lg z-50">
-                {modes.map((mode) => (
-                  <button
-                    key={mode.id}
-                    onClick={() => {
-                      setSelectedMode(mode.id);
-                      setIsModeDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 flex items-center gap-2 ${
-                      selectedMode === mode.id
-                        ? 'bg-gray-600'
-                        : 'hover:bg-gray-600'
-                    } transition-colors`}
-                  >
-                    <mode.icon className="w-4 h-4" />
-                    {mode.name}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left: Chat */}
-        <div className="flex flex-col flex-1 border-r border-gray-700">
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {isLoading && messages.length === 1 ? (
-              <div className="flex items-center justify-center h-full">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
-              </div>
-            ) : (
-              messages.map((message) => (
-                <motion.div
-                  key={message.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${
-                    message.type === 'user' ? 'justify-end' : 'justify-start'
-                  }`}
-                >
-                  <div
-                    className={`flex gap-3 max-w-md ${
-                      message.type === 'user' ? 'flex-row-reverse' : ''
-                    }`}
-                  >
-                    <div
-                      className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                        message.type === 'user'
-                          ? 'bg-blue-600'
-                          : 'bg-gray-700'
-                      }`}
-                    >
-                      {message.type === 'user' ? (
-                        <User className="w-4 h-4 text-white" />
-                      ) : (
-                        <Bot className="w-4 h-4 text-white" />
-                      )}
-                    </div>
-                    <div
-                      className={`px-4 py-2 rounded-lg ${
-                        message.type === 'user'
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-700 text-gray-100'
-                      }`}
-                    >
-                      <p className="text-sm">{message.text}</p>
-                      <span className="text-xs opacity-70 mt-1 block">
-                        {message.timestamp.toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                </motion.div>
-              ))
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Input area */}
-          <div className="p-4 border-t border-gray-700 bg-gray-800/50">
-            <form onSubmit={handleSend} className="flex gap-2">
-              <input
-                ref={inputRef}
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Ask anything..."
-                className="flex-1 px-4 py-2 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
-              />
-              <button
-                type="submit"
-                disabled={isLoading || !inputValue.trim()}
-                className="p-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-lg transition-colors"
-              >
-                <Send className="w-5 h-5" />
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {/* Right: Products & Platforms */}
-        <div className="w-1/2 border-l border-gray-700 flex flex-col overflow-hidden">
-          {/* Products list */}
-          <div className="border-b border-gray-700 p-4 bg-gray-800/50">
-            <h2 className="text-sm font-semibold text-gray-300 mb-3 flex items-center gap-2">
-              <ShoppingBag className="w-4 h-4" />
-              Products
-            </h2>
-            {products.length === 0 ? (
-              <p className="text-xs text-gray-500">No products found</p>
-            ) : (
-              <div className="space-y-2 max-h-32 overflow-y-auto">
-                {products.map((product) => (
-                  <button
-                    key={product.id}
-                    onClick={() => setSelectedProductId(product.id)}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-xs ${
-                      selectedProductId === product.id
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                    }`}
-                  >
-                    <p className="font-medium truncate">{product.name}</p>
-                    <p className="text-gray-400">{product.price}</p>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
+    <div className="flex flex-col w-full h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800">
+      <div className="flex overflow-hidden flex-1">
+        {/* Center: Products & Platforms */}
+        <div className="flex overflow-hidden flex-col flex-1 border-r border-gray-700 max-w-[60%]">
           {/* Platform filters */}
-          <div className="border-b border-gray-700 p-4 bg-gray-800/50">
-            <h3 className="text-xs font-semibold text-gray-300 mb-3 flex items-center gap-2">
+          <div className="px-4 pt-4 pb-4 border-b border-gray-700 bg-gray-800/50">
+            <h3 className="flex gap-2 items-center mb-3 text-xs font-semibold text-gray-300">
               <Store className="w-4 h-4" />
               Platforms ({selectedPlatforms.length}/5)
             </h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-3 gap-2">
               {stores.map((store) => (
                 <button
                   key={store.id}
                   onClick={() => togglePlatform(store.id)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-all flex items-center justify-center ${
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
                     selectedPlatforms.includes(store.id)
-                      ? `bg-gradient-to-r ${store.color}`
-                      : 'bg-gray-700 hover:bg-gray-600'
+                      ? 'bg-teal-600 text-black'
+                      : 'bg-gray-700 hover:bg-gray-600 text-black'
                   }`}
                 >
                   <img
                     src={store.logo}
                     alt={store.name}
-                    className="h-6 w-6 object-contain rounded-full bg-white p-[2px]"
+                    className="h-5 w-5 object-contain rounded-full bg-white p-0.5 flex-shrink-0"
                   />
+                  <span className="whitespace-nowrap">{store.name}</span>
                 </button>
               ))}
             </div>
           </div>
 
+          {/* Product Name */}
+          {selectedProduct && (
+            <div className="border-b border-gray-700 bg-gray-800/50">
+              <h2 className="px-4 py-3 text-base font-semibold text-center text-white">
+                {selectedProduct.name}
+              </h2>
+            </div>
+          )}
+
           {/* Platform results */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="overflow-y-auto flex-1 p-4">
             {selectedProduct ? (
               platformResultsData.length > 0 ? (
                 <div className="space-y-3">
                   {platformResultsData.map((platform) => (
                     <div
                       key={platform.platformId}
-                      className="border border-gray-700 rounded-lg p-3 bg-gray-800/50 hover:bg-gray-800 transition-colors"
+                      className="p-3 rounded-lg border border-gray-700 transition-colors bg-gray-800/50 hover:bg-gray-800"
                     >
                       <div className="flex justify-between items-center mb-2">
-                        <div className="flex items-center gap-2">
+                        <div className="flex gap-2 items-center">
                           {platform.logo && (
                             <img
                               src={platform.logo}
@@ -528,12 +385,12 @@ const ResultsPage = ({ query, onBack }) => {
                               className="h-5 w-5 object-contain rounded-full bg-white p-[1px]"
                             />
                           )}
-                          <span className="font-semibold text-sm text-gray-200">
+                          <span className="text-sm font-semibold text-gray-200">
                             {platform.platformName}
                           </span>
                         </div>
                         {platform.status === 'loading' && (
-                          <span className="text-xs text-gray-400 flex items-center gap-1">
+                          <span className="flex gap-1 items-center text-xs text-gray-400">
                             <Loader2 className="w-3 h-3 animate-spin" />{' '}
                             Scraping...
                           </span>
@@ -567,54 +424,54 @@ const ResultsPage = ({ query, onBack }) => {
 
                       {platform.status === 'success' &&
                         platform.products.length > 0 && (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                             {platform.products.map((p, idx) => (
                               <a
                                 key={idx}
                                 href={p.productUrl || '#'}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex gap-3 bg-gray-800/70 hover:bg-gray-700/70 border border-gray-600 rounded-lg p-2 text-xs transition-colors"
+                                className="flex gap-4 p-3 text-sm rounded-lg border border-gray-600 transition-colors bg-gray-800/70 hover:bg-gray-700/70"
                               >
-                                <div className="w-16 h-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-900 flex items-center justify-center">
+                                <div className="flex overflow-hidden flex-shrink-0 justify-center items-center w-24 h-24 bg-gray-900 rounded-md">
                                   {p.imageUrl ? (
                                     <img
                                       src={p.imageUrl}
                                       alt={p.name}
-                                      className="w-full h-full object-cover"
+                                      className="object-cover w-full h-full"
                                       loading="lazy"
                                     />
                                   ) : (
-                                    <span className="text-[10px] text-gray-500 text-center px-1">
+                                    <span className="px-1 text-xs text-center text-gray-500">
                                       No Image
                                     </span>
                                   )}
                                 </div>
 
                                 <div className="flex-1 min-w-0">
-                                  <p className="font-semibold text-gray-100 text-[11px] leading-snug line-clamp-2">
+                                  <p className="text-sm font-semibold leading-snug text-gray-100 line-clamp-2">
                                     {p.name}
                                   </p>
 
-                                  <div className="mt-1 flex items-baseline gap-2">
-                                    <span className="text-green-400 font-bold text-sm">
+                                  <div className="flex gap-2 items-baseline mt-2">
+                                    <span className="text-base font-bold text-green-400">
                                       ₹{p.price ?? 'N/A'}
                                     </span>
                                     {p.mrp && p.mrp !== p.price && (
-                                      <span className="text-[11px] text-gray-500 line-through">
+                                      <span className="text-xs text-gray-500 line-through">
                                         ₹{p.mrp}
                                       </span>
                                     )}
                                   </div>
 
-                                  <div className="mt-1 flex items-center gap-2">
+                                  <div className="flex gap-2 items-center mt-2">
                                     {p.discount && p.discount > 0 && (
-                                      <span className="inline-flex px-2 py-[2px] rounded-full bg-green-900/60 text-[10px] text-green-300 font-semibold">
+                                      <span className="inline-flex px-2 py-1 text-xs font-semibold text-green-300 rounded-full bg-green-900/60">
                                         {p.discount}% OFF
                                       </span>
                                     )}
                                     {p.isOutOfStock && (
-                                      <span className="inline-flex px-2 py-[2px] rounded-full bg-red-900/60 text-[10px] text-red-300 font-semibold">
+                                      <span className="inline-flex px-2 py-1 text-xs font-semibold text-red-300 rounded-full bg-red-900/60">
                                         Out of Stock
                                       </span>
                                     )}
@@ -628,17 +485,141 @@ const ResultsPage = ({ query, onBack }) => {
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500 text-sm">
+                <p className="text-sm text-gray-500">
                   Platform results will appear here...
                 </p>
               )
             ) : (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500 text-sm text-center">
+              <div className="flex justify-center items-center h-full">
+                <p className="text-sm text-center text-gray-500">
                   Loading products...
                 </p>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Right: Chat */}
+        <div className="flex flex-col w-2/5 border-l border-gray-700">
+          {/* Chat Header */}
+          <div className="flex gap-3 items-center p-3 border-b border-gray-700 bg-gray-800/50">
+            <button
+              onClick={onBack}
+              className="p-2 rounded-lg transition-colors hover:bg-gray-700"
+            >
+              <ArrowLeft className="w-5 h-5 text-gray-300" />
+            </button>
+            <h1 className="text-lg font-semibold text-white">Bilmo Shopping Agent</h1>
+          </div>
+          <div className="overflow-y-auto flex-1 p-4 space-y-4">
+            {isLoading && messages.length === 1 ? (
+              <div className="flex justify-center items-center h-full">
+                <Loader2 className="w-8 h-8 text-teal-500 animate-spin" />
+              </div>
+            ) : (
+              messages.map((message) => (
+                <motion.div
+                  key={message.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex ${
+                    message.type === 'user' ? 'justify-end' : 'justify-start'
+                  }`}
+                >
+                  <div
+                    className={`flex gap-3 max-w-md ${
+                      message.type === 'user' ? 'flex-row-reverse' : ''
+                    }`}
+                  >
+                    <div
+                      className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                        message.type === 'user'
+                          ? 'bg-teal-600'
+                          : 'bg-gray-700'
+                      }`}
+                    >
+                      {message.type === 'user' ? (
+                        <User className="w-4 h-4 text-white" />
+                      ) : (
+                        <Bot className="w-4 h-4 text-white" />
+                      )}
+                    </div>
+                    <div
+                      className={`px-4 py-2 rounded-lg ${
+                        message.type === 'user'
+                          ? 'bg-teal-600 text-black'
+                          : 'bg-gray-700 text-gray-100'
+                      }`}
+                    >
+                      <p className="text-sm">{message.text}</p>
+                      <span className={`text-xs opacity-70 mt-1 block ${
+                        message.type === 'user' ? 'text-black' : ''
+                      }`}>
+                        {message.timestamp.toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              ))
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input area */}
+          <div className="p-4 border-t border-gray-700 bg-gray-800/50">
+            <form onSubmit={handleSend} className="flex gap-2">
+              <input
+                ref={inputRef}
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Ask anything..."
+                className="flex-1 px-4 py-2 placeholder-gray-400 text-white bg-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              />
+              <div ref={modeDropdownRef} className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsModeDropdownOpen(!isModeDropdownOpen)}
+                  className="flex items-center gap-2 px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm h-[42px]"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  {modes.find((m) => m.id === selectedMode)?.name}
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                {isModeDropdownOpen && (
+                  <div className="absolute right-0 bottom-full z-50 mb-2 w-48 bg-gray-700 rounded-lg border border-gray-600 shadow-lg">
+                    {modes.map((mode) => (
+                      <button
+                        key={mode.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedMode(mode.id);
+                          setIsModeDropdownOpen(false);
+                        }}
+                        className={`w-full text-left px-4 py-2 flex items-center gap-2 ${
+                          selectedMode === mode.id
+                            ? 'bg-gray-600'
+                            : 'hover:bg-gray-600'
+                        } transition-colors`}
+                      >
+                        <mode.icon className="w-4 h-4" />
+                        {mode.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading || !inputValue.trim()}
+                className="p-2 text-white bg-teal-600 rounded-lg transition-colors hover:bg-teal-700 disabled:bg-gray-600"
+              >
+                <Send className="w-5 h-5" />
+              </button>
+            </form>
           </div>
         </div>
       </div>
